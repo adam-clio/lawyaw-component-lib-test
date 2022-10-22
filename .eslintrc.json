@@ -1,0 +1,51 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:storybook/recommended"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "**/*.test.*"
+            ],
+            "plugins": [
+                "jest"
+            ],
+            "rules": {
+                "jest/expect-expect": "error",
+                "jest/no-disabled-tests": "warn",
+                "jest/no-focused-tests": "error",
+                "jest/no-identical-title": "error",
+                "jest/prefer-to-have-length": "warn",
+                "jest/valid-expect": "error"
+            }
+        }
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "prettier",
+        "jsx-a11y",
+        "unused-imports"
+    ],
+    "rules": {
+        "prettier/prettier": "error",
+        "unused-imports/no-unused-imports-ts": 2
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}

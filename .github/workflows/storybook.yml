@@ -1,0 +1,50 @@
+name: Build Storybook
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+
+      - name: Install node modules
+        run: yarn --frozen-lockfile
+
+      - name: Build storybook
+        run: yarn storybook:build --loglevel silent
+
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          workingDirectory: storybook-static
+          apiToken: ${{ secrets.CF_PAGES_API_TOKEN }}
+          accountId: ${{ secrets.CF_PAGES_ACCOUNT_ID }}
+          command: pages publish . --project-name lawyaw-component-lib --branch ${{ github.head_ref || github.ref_name }}
+
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: deploy
+          message: |
+            ## Deployed Storybook <img src="https://storybook.js.org/icons/icon-144x144.png" width="20" height="20"> to CloudFlare <img src="https://pages.cloudflare.com/resources/logo/logo.svg" height="20" width="20"/>
+
+            <table>
+              <tr>
+                <td><strong>Latest commit:</strong></td>
+                <td><code>${{ github.sha }}</code></td>
+              </tr>
+              <tr>
+                <td><strong>Deployed At:</strong></td>
+                <td><a href="https://${{ github.head_ref || github.ref_name }}.lawyaw-component-lib.pages.dev">https://${{ github.head_ref || github.ref_name }}.lawyaw-component-lib.pages.dev</a></td>
+              </tr>
+            </table>
